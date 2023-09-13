@@ -1,0 +1,22 @@
+REST API : This stands for Representational State Transfer Application Programming Interface
+
+
+
+Use the below code to make the api controller
+php artisan make:controller Api/AttendeeController --api
+
+
+
+USE THE BELOW CODE TO CREATE FACTORY
+php artisan make:factory EventFactory --model=Event
+
+
+
+USE THE BELOW CODE TO MAKE SEEDER
+php artisan make:seeder AttendeeSeeder
+
+
+
+USE THE BELOW CODE TO MAKE RESOURCE
+php artisan make:resource EventResource
+php artisan make:resource UserResource
