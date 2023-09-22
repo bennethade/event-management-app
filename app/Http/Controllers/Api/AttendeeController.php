@@ -10,6 +10,16 @@ use Illuminate\Http\Request;
 
 class AttendeeController extends Controller
 {
+
+    public function __construct()
+    {
+        $this->middleware('auth:sanctum')->except('index','show', 'update');
+        $this->middleware('throttle:60,1')//This is 60 requests per minute
+            ->only(['store', 'destroy']); 
+        $this->authorizeResource(Attendee::class, 'attendee'); //THIS WAS ADDED FOR THE POLICIES TO WORK
+    }
+
+
     /**
      * Display a listing of the resource.
      */
@@ -28,7 +38,7 @@ class AttendeeController extends Controller
     public function store(Request $request, Event $event)
     {
         $attendee = $event->attendees()->create([
-            'user_id' => 1,
+            'user_id' => $request->user()->id,
         ]);
 
         return new AttendeeResource($attendee);
@@ -53,8 +63,9 @@ class AttendeeController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $event, Attendee $attendee)
+    public function destroy(Event $event, Attendee $attendee)
     {
+        // $this->authorize('delete-attendee', [$event, $attendee]); //THIS IS CODED FIRST IN 'AUTHSERVICEPROVIDER.PHP' FILE USING GATES
         $attendee->delete();
 
         return response(status:204);

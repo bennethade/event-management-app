@@ -20,3 +20,9 @@ php artisan make:seeder AttendeeSeeder
 USE THE BELOW CODE TO MAKE RESOURCE
 php artisan make:resource EventResource
 php artisan make:resource UserResource
+
+
+
+To send notification to event attendees
+Create the command file in app\console\command\filename the console folder in app folder. 
+Then add the scheduler code in app\Kernel

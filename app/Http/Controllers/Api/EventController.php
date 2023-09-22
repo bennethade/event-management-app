@@ -10,6 +10,19 @@ use Illuminate\Http\Request;
 
 class EventController extends Controller
 {
+
+    public function __construct()
+    {
+        $this->middleware('auth:sanctum')->except('index','show');
+
+        $this->middleware('throttle:60,1')//This is 60 requests per minute
+            ->only(['store','update', 'destroy']); //The only([]) makes it applied to the specified functions
+
+        $this->authorizeResource(Event::class, 'event'); //THIS WAS ADDED FOR THE POLICIES TO WORK
+    }
+
+
+
     /**
      * Display a listing of the resource.
      */
@@ -61,7 +74,7 @@ class EventController extends Controller
                 'end_time' => 'required|date|after:start_time'
             ]),
 
-            'user_id' => 1,
+            'user_id' => $request->user()->id
     
         ]);
 
@@ -87,6 +100,9 @@ class EventController extends Controller
     // public function update(Request $request, string $id)
     public function update(Request $request, Event $event) //THIS IS CALLED ROUTE MODEL BINDING (USING THE MODEL NAME AND THE VARIABLE, INSTEAD OF THE ID)
     {
+
+        $this->authorize('update-event', $event); //THIS IS CODED FIRST IN 'AUTHSERVICEPROVIDER.PHP' FILE USING GATES
+
         $event->update(
                 $request->validate([
                 'name' => 'sometimes|string|max:255',
